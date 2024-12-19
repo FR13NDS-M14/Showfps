@@ -1,0 +1,37 @@
+using StardewModdingAPI;
+using StardewModdingAPI.Events;
+using StardewValley;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace ShowFPS
+{
+    public class ModEntry : Mod
+    {
+        private int frameCount = 0;
+        private double elapsedTime = 0;
+        private int currentFPS = 0;
+
+        public override void Entry(IModHelper helper)
+        {
+            GraphicsEvents.OnPostRenderGuiEvent += this.OnPostRenderGui;
+        }
+
+        private void OnPostRenderGui(SpriteBatch spriteBatch)
+        {
+            // Hitung FPS
+            frameCount++;
+            elapsedTime += Game1.currentGameTime.ElapsedGameTime.TotalSeconds;
+
+            if (elapsedTime >= 1.0)
+            {
+                currentFPS = frameCount;
+                frameCount = 0;
+                elapsedTime = 0;
+            }
+
+            // Tampilkan FPS di layar
+            spriteBatch.DrawString(Game1.smallFont, $"FPS: {currentFPS}", new Vector2(100, 100), Color.Blue);
+        }
+    }
+}
